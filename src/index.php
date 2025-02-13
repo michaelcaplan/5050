@@ -3,11 +3,28 @@
 require_once(__DIR__ . '/../vendor/autoload.php');
 
 use Appwrite\Client;
+use Stripe\Stripe;
 
 // This Appwrite function will be executed every time your function is triggered
 return function ($context) {
 
     try {
+        Stripe::setApiKey(getenv('STRIPE_SECRET'));
+        $event = \Stripe\Webhook::constructEvent(
+            $context->req->bodyText,
+            $_SERVER['HTTP_STRIPE_SIGNATURE'],
+            getenv('STRIPE_WEBHOOK_SECRET')
+        );
+
+        $context->log('Event: ' . $event->type);
+
+        if ($event->type !== 'checkout.session.completed') {
+            $context->res->json([
+                'msg' => 'Nope'
+            ]);
+        }
+
+
         $client = new Client();
         $client
             ->setEndpoint(getenv('APPWRITE_FUNCTION_API_ENDPOINT'))
