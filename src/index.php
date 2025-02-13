@@ -25,17 +25,11 @@ return function ($context) {
         $context->error('Could not list users: ' . $error->getMessage());
     }
 
-    // The req object contains the request data
-    if ($context->req->path === '/ping') {
-        // Use res object to respond with text(), json(), or binary()
-        // Don't forget to return a response!
-        return $context->res->text('Pong');
-    }
 
-    return $context->res->json([
-        'motto' => 'Build like a team of hundreds_',
-        'learn' => 'https://appwrite.io/docs',
-        'connect' => 'https://appwrite.io/discord',
-        'getInspired' => 'https://builtwith.appwrite.io',
-    ]);
+    if ($context->req->path === '/stripe') {
+
+        $context->log(json_encode($context->req->bodyJson));
+
+        return $context->res->text('Thanks Stripe, buddy, old pal.');
+    }
 };
