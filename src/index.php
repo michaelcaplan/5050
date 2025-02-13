@@ -30,6 +30,8 @@ return function ($context) {
 
         $context->log(json_encode($context->req->bodyJson));
 
-        return $context->res->text('Thanks Stripe, buddy, old pal.');
+        return $context->res->json('Thanks Stripe, buddy, old pal.');
     }
+
+    return $context->res->json('Nope');
 };
