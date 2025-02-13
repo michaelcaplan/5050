@@ -32,6 +32,12 @@ return function ($context) {
         return $context->res->text('Pong');
     }
 
+    if ($context->req->path === '/stripe') {
+        $context->log(json_encode($context->req->bodyJson));
+
+        return $context->res->json('Thanks Stripe, buddy, old pal.');
+    }
+
     return $context->res->json([
         'motto' => 'Build like a team of hundreds_',
         'learn' => 'https://appwrite.io/docs',
