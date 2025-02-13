@@ -9,7 +9,6 @@ use Stripe\Stripe;
 return function ($context) {
 
     try {
-        $context->log(print_r($context->req->headers,1));
 
         Stripe::setApiKey(getenv('STRIPE_SECRET'));
         $event = \Stripe\Webhook::constructEvent(
