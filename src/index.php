@@ -21,7 +21,7 @@ return function ($context) {
             try {
                 $context->log(json_encode($context->req->bodyJson));
 
-                $display = $context->req->bodyJson['data']['object']['custom_fields'][2]['value'];
+                $display = $context->req->bodyJson['data']['object']['custom_fields'][2]['dropdown']['value'];
                 if (empty($display) || str_contains($display, 'Yes')) {
                     $display = true;
                 } else {
