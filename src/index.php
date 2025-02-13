@@ -16,7 +16,7 @@ return function ($context) {
 //        ->setProject(getenv('APPWRITE_FUNCTION_PROJECT_ID'))
 //        ->setKey($context->req->headers['x-appwrite-key']);
 
-        $context->log('Total users: Hi!');
+        $context->log('Hi!');
 
 
         if ($context->req->path === '/stripe') {
@@ -27,13 +27,16 @@ return function ($context) {
                 $context->log($e->getMessage());
             }
 
-
-            return $context->res->json('Thanks Stripe, buddy, old pal.');
+            return $context->res->json([
+                'msg' => 'Thanks Stripe, buddy, old pal.'
+            ]);
         }
     } catch (Exception $e) {
         $context->log((string) $e);
     }
 
 
-    return $context->res->json('Nope');
+    return $context->res->json([
+        'msg' => 'Nope'
+    ]);
 };
