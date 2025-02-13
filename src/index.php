@@ -33,9 +33,13 @@ return function ($context) {
     }
 
     if ($context->req->path === '/stripe') {
-        $context->log(json_encode($context->req->bodyJson));
+        try {
+            $context->log(json_encode($context->req->bodyJson));
 
-        return $context->res->json('Thanks Stripe, buddy, old pal.');
+            return $context->res->json('Thanks Stripe, buddy, old pal.');
+        } catch(Throwable $error) {
+            $context->error('Huh? ' . $error->getMessage());
+        }
     }
 
     return $context->res->json([
