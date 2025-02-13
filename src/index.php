@@ -39,7 +39,7 @@ return function ($context) {
                         'email' => $context->req->bodyJson['data']['object']['customer_details']['email'],
                         'display' => $display,
                         'business' => $context->req->bodyJson['data']['object']['custom_fields'][1]['text']['value'],
-                        'created' =>  $context->req->bodyJson['data']['object']['created']
+                        'created' =>  date('c', $context->req->bodyJson['data']['object']['created'])
                     ]
                 );
             } catch (Throwable $e) {
