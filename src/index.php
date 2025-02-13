@@ -14,7 +14,7 @@ return function ($context) {
         Stripe::setApiKey(getenv('STRIPE_SECRET'));
         $event = \Stripe\Webhook::constructEvent(
             $context->req->bodyText,
-            $context->req->headers['HTTP_STRIPE_SIGNATURE'],
+            $context->req->headers['stripe-signature'],
             getenv('STRIPE_WEBHOOK_SECRET')
         );
 
@@ -37,40 +37,37 @@ return function ($context) {
 
         if ($context->req->path === '/stripe') {
 
-            try {
-                $context->log(json_encode($context->req->bodyJson));
+            $context->log(json_encode($context->req->bodyJson));
 
-                $display = $context->req->bodyJson['data']['object']['custom_fields'][2]['dropdown']['value'];
-                if (empty($display) || str_contains($display, 'Yes')) {
-                    $display = true;
-                } else {
-                    $display = false;
-                }
-
-                $db->createDocument(
-                    '67acfa8f001b82489d37',
-                    '67acfaaf000e9833c9e6',
-                    Appwrite\ID::unique(),
-                    [
-                        'name' => $context->req->bodyJson['data']['object']['customer_details']['name'],
-                        'total' => $context->req->bodyJson['data']['object']['amount_total'],
-                        'team' => $context->req->bodyJson['data']['object']['custom_fields'][0]['dropdown']['value'],
-                        'email' => $context->req->bodyJson['data']['object']['customer_details']['email'],
-                        'display' => $display,
-                        'business' => $context->req->bodyJson['data']['object']['custom_fields'][1]['text']['value'],
-                        'created' =>  date('c', $context->req->bodyJson['data']['object']['created'])
-                    ]
-                );
-            } catch (Throwable $e) {
-                $context->log($e->getMessage());
+            $display = $context->req->bodyJson['data']['object']['custom_fields'][2]['dropdown']['value'];
+            if (empty($display) || str_contains($display, 'Yes')) {
+                $display = true;
+            } else {
+                $display = false;
             }
+
+            $db->createDocument(
+                '67acfa8f001b82489d37',
+                '67acfaaf000e9833c9e6',
+                Appwrite\ID::unique(),
+                [
+                    'name' => $context->req->bodyJson['data']['object']['customer_details']['name'],
+                    'total' => $context->req->bodyJson['data']['object']['amount_total'],
+                    'team' => $context->req->bodyJson['data']['object']['custom_fields'][0]['dropdown']['value'],
+                    'email' => $context->req->bodyJson['data']['object']['customer_details']['email'],
+                    'display' => $display,
+                    'business' => $context->req->bodyJson['data']['object']['custom_fields'][1]['text']['value'],
+                    'created' =>  date('c', $context->req->bodyJson['data']['object']['created'])
+                ]
+            );
 
             return $context->res->json([
                 'msg' => 'Thanks Stripe, buddy, old pal.'
             ]);
         }
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
         $context->log((string) $e);
+        throw $e;
     }
 
     return $context->res->json([
