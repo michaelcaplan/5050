@@ -9,10 +9,12 @@ use Stripe\Stripe;
 return function ($context) {
 
     try {
+        $context->log(print_r($context->req->headers,1));
+
         Stripe::setApiKey(getenv('STRIPE_SECRET'));
         $event = \Stripe\Webhook::constructEvent(
             $context->req->bodyText,
-            $_SERVER['HTTP_STRIPE_SIGNATURE'],
+            $context->req->headers['HTTP_STRIPE_SIGNATURE'],
             getenv('STRIPE_WEBHOOK_SECRET')
         );
 
