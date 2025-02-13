@@ -20,7 +20,13 @@ return function ($context) {
 
 
         if ($context->req->path === '/stripe') {
-            $context->log(json_encode($context->req->bodyJson));
+
+            try {
+                $context->log(json_encode($context->req->bodyJson));
+            } catch (Throwable $e) {
+                $context->log($e->getMessage());
+            }
+
 
             return $context->res->json('Thanks Stripe, buddy, old pal.');
         }
