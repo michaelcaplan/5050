@@ -7,7 +7,7 @@ use Stripe\Stripe;
 
 function getCustomField($fields, $key) {
     foreach ($fields as $field) {
-        if ($field['key'] == $key) {
+        if (str_contains($field['key'], $key)) {
             return $field;
         }
     }
@@ -48,7 +48,7 @@ return function ($context) {
 
             $context->log(json_encode($context->req->bodyJson));
 
-            $dontDisplayField = getCustomField($context->req->bodyJson['data']['object']['custom_fields'], 'dontdisplaymynamepubliclyonthefundraiser');
+            $dontDisplayField = getCustomField($context->req->bodyJson['data']['object']['custom_fields'], 'display');
 
             if (empty($dontDisplayField) || str_contains($dontDisplayField['dropdown']['value'], 'No')) {
                 $display = true;
@@ -56,7 +56,7 @@ return function ($context) {
                 $display = false;
             }
 
-            $businessField = getCustomField($context->req->bodyJson['data']['object']['custom_fields'], 'businessname');
+            $businessField = getCustomField($context->req->bodyJson['data']['object']['custom_fields'], 'business');
             $teamField = getCustomField($context->req->bodyJson['data']['object']['custom_fields'], 'team');
 
             $db->createDocument(
