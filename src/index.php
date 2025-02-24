@@ -50,7 +50,7 @@ return function ($context) {
 
             $dontDisplayField = getCustomField($context->req->bodyJson['data']['object']['custom_fields'], 'dontdisplaymynamepubliclyonthefundraiser');
 
-            if (empty($dontDisplayField) || str_contains($dontDisplayField['dropdown']['value'], 'Yes')) {
+            if (empty($dontDisplayField) || str_contains($dontDisplayField['dropdown']['value'], 'No')) {
                 $display = true;
             } else {
                 $display = false;
