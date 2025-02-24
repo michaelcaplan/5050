@@ -50,7 +50,7 @@ return function ($context) {
 
             $dontDisplayField = getCustomField($context->req->bodyJson['data']['object']['custom_fields'], 'display');
 
-            if (empty($dontDisplayField) || str_contains($dontDisplayField['dropdown']['value'], 'No')) {
+            if (empty($dontDisplayField) || empty($dontDisplayField['dropdown']['value']) || str_contains($dontDisplayField['dropdown']['value'], 'No')) {
                 $display = true;
             } else {
                 $display = false;
