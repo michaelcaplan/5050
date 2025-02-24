@@ -5,6 +5,16 @@ require_once(__DIR__ . '/../vendor/autoload.php');
 use Appwrite\Client;
 use Stripe\Stripe;
 
+function getCustomField($fields, $key) {
+    foreach ($fields as $field) {
+        if ($field['key'] == $key) {
+            return $field;
+        }
+    }
+
+    return null;
+}
+
 // This Appwrite function will be executed every time your function is triggered
 return function ($context) {
 
@@ -38,12 +48,16 @@ return function ($context) {
 
             $context->log(json_encode($context->req->bodyJson));
 
-            $display = $context->req->bodyJson['data']['object']['custom_fields'][2]['dropdown']['value'];
-            if (empty($display) || str_contains($display, 'Yes')) {
+            $dontDisplayField = getCustomField($context->req->bodyJson['data']['object']['custom_fields'], 'dontdisplaymynamepubliclyonthefundraiser');
+
+            if (empty($dontDisplayField) || str_contains($dontDisplayField['dropdown']['value'], 'Yes')) {
                 $display = true;
             } else {
                 $display = false;
             }
+
+            $businessField = getCustomField($context->req->bodyJson['data']['object']['custom_fields'], 'businessname');
+            $teamField = getCustomField($context->req->bodyJson['data']['object']['custom_fields'], 'team');
 
             $db->createDocument(
                 '67acfa8f001b82489d37',
@@ -52,10 +66,10 @@ return function ($context) {
                 [
                     'name' => $context->req->bodyJson['data']['object']['customer_details']['name'],
                     'total' => $context->req->bodyJson['data']['object']['amount_total'],
-                    'team' => $context->req->bodyJson['data']['object']['custom_fields'][0]['dropdown']['value'],
+                    'team' => (!empty($teamField) ? $teamField['dropdown']['value'] : null),
                     'email' => $context->req->bodyJson['data']['object']['customer_details']['email'],
                     'display' => $display,
-                    'business' => $context->req->bodyJson['data']['object']['custom_fields'][1]['text']['value'],
+                    'business' => (!empty($businessField) ? $businessField['text']['value'] : null),
                     'created' =>  date('c', $context->req->bodyJson['data']['object']['created'])
                 ]
             );
