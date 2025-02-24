@@ -38,7 +38,7 @@ return function ($context) {
 
             $context->log(json_encode($context->req->bodyJson));
 
-            $display = $context->req->bodyJson['data']['object']['custom_fields'][2]['dropdown']['value'];
+            $display = $context->req->bodyJson['data']['object']['custom_fields'][1]['dropdown']['value'];
             if (empty($display) || str_contains($display, 'Yes')) {
                 $display = true;
             } else {
@@ -55,7 +55,7 @@ return function ($context) {
                     'team' => $context->req->bodyJson['data']['object']['custom_fields'][0]['dropdown']['value'],
                     'email' => $context->req->bodyJson['data']['object']['customer_details']['email'],
                     'display' => $display,
-                    'business' => $context->req->bodyJson['data']['object']['custom_fields'][1]['text']['value'],
+                    'business' => $context->req->bodyJson['data']['object']['custom_fields'][2]['text']['value'],
                     'created' =>  date('c', $context->req->bodyJson['data']['object']['created'])
                 ]
             );
